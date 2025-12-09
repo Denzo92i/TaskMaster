@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.taskmaster.controllers.LoginController"
+      alignment="CENTER" spacing="20" style="-fx-background-color: #f5f5f5;">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <!-- Logo / Titre -->
+    <Label text="TaskMaster" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+    <Label text="Connexion" style="-fx-font-size: 18px; -fx-text-fill: #7f8c8d;"/>
+
+    <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10;">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
+
+        <!-- Champ Username -->
+        <VBox spacing="5">
+            <Label text="Nom d'utilisateur" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="usernameField" promptText="Entrez votre username"
+                       style="-fx-font-size: 14px; -fx-pref-height: 40px;"/>
+        </VBox>
+
+        <!-- Champ Password -->
+        <VBox spacing="5">
+            <Label text="Mot de passe" style="-fx-font-weight: bold;"/>
+            <PasswordField fx:id="passwordField" promptText="Entrez votre mot de passe"
+                           style="-fx-font-size: 14px; -fx-pref-height: 40px;"/>
+        </VBox>
+
+        <!-- Message d'erreur -->
+        <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 12px;" wrapText="true"/>
+
+        <!-- Bouton Connexion -->
+        <Button fx:id="loginButton" text="Se connecter" onAction="#handleLogin"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 16px;
+                       -fx-pref-height: 45px; -fx-cursor: hand;"
+                maxWidth="Infinity">
+            <font>
+                <Font name="System Bold" size="16"/>
+            </font>
+        </Button>
+    </VBox>
+
+    <!-- Info de test -->
+    <Label text="Test : admin / password123" style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;"/>
+</VBox>

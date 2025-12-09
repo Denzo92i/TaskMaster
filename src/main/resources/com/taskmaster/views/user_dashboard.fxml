@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.taskmaster.controllers.UserDashboardController"
+            prefWidth="1200" prefHeight="700">
+
+    <!-- MENU LATERAL GAUCHE -->
+    <left>
+        <VBox spacing="0" style="-fx-background-color: #16a085;" prefWidth="250">
+            <padding>
+                <Insets top="20" right="0" bottom="20" left="0"/>
+            </padding>
+
+            <!-- En-tête -->
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+                <Label text="TASKMASTER" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label fx:id="welcomeLabel" text="Utilisateur" style="-fx-text-fill: #ecf0f1; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <Separator style="-fx-background-color: #1abc9c;"/>
+
+            <!-- Boutons de navigation -->
+            <VBox spacing="5" style="-fx-padding: 10;">
+                <Button text="✅ Mes Tâches" onAction="#showMyTasks"
+                        maxWidth="Infinity" style="-fx-background-color: #1abc9c; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+
+                <Button text="📁 Projets" onAction="#showProjects"
+                        maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+
+                <Separator style="-fx-background-color: #1abc9c;"/>
+
+                <Button text="👤 Mon profil" onAction="#showProfile"
+                        maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+
+                <Button text="🚪 Déconnexion" onAction="#handleLogout"
+                        maxWidth="Infinity" style="-fx-background-color: #c0392b; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- CONTENU CENTRAL -->
+    <center>
+        <VBox spacing="20" style="-fx-background-color: #ecf0f1;">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <Label text="Mes Tâches" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+
+            <!-- Filtres -->
+            <HBox spacing="15">
+                <Label text="Filtrer par statut :" style="-fx-font-size: 14px;" alignment="CENTER_LEFT"/>
+                <ComboBox fx:id="statusFilter" onAction="#filterTasks" prefWidth="150">
+                    <items>
+                        <javafx.collections.FXCollections fx:factory="observableArrayList">
+                            <String fx:value="TOUS"/>
+                            <String fx:value="TODO"/>
+                            <String fx:value="IN_PROGRESS"/>
+                            <String fx:value="COMPLETED"/>
+                        </javafx.collections.FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+
+            <!-- Tableau des tâches -->
+            <TableView fx:id="tasksTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="titleColumn" text="Titre" prefWidth="250"/>
+                    <TableColumn fx:id="projectColumn" text="Projet" prefWidth="180"/>
+                    <TableColumn fx:id="priorityColumn" text="Priorité" prefWidth="100"/>
+                    <TableColumn fx:id="statusColumn" text="Statut" prefWidth="120"/>
+                    <TableColumn fx:id="dueDateColumn" text="Date limite" prefWidth="120"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="200"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

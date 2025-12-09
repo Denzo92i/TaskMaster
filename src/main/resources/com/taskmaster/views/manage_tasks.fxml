@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.taskmaster.controllers.TaskManagementController"
+            prefWidth="1200" prefHeight="700">
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox spacing="0" style="-fx-background-color: #2c3e50;" prefWidth="250">
+            <padding>
+                <Insets top="20" right="0" bottom="20" left="0"/>
+            </padding>
+
+            <!-- Logo + texte -->
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+                <Label text="TASKMASTER"
+                       style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label fx:id="welcomeLabel" text="Gestion des Tâches"
+                       style="-fx-text-fill: #ecf0f1; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <Separator style="-fx-background-color: #34495e;"/>
+
+            <VBox spacing="5" style="-fx-padding: 10;">
+                <Button text="⬅️ Retour Dashboard" onAction="#goBack"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="20" style="-fx-background-color: #ecf0f1;">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- Top Bar -->
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Label text="Gestion des Tâches"
+                       style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="➕ Nouvelle Tâche" onAction="#createNewTask"
+                        style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 16px;
+                        -fx-padding: 10 20; -fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Filters -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Filtrer :" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+                <Label text="Statut :"/>
+                <ComboBox fx:id="filterStatus" onAction="#applyFilters" prefWidth="150"/>
+
+                <Label text="Priorité :"/>
+                <ComboBox fx:id="filterPriority" onAction="#applyFilters" prefWidth="150"/>
+
+                <Label text="Projet :"/>
+                <ComboBox fx:id="filterProject" onAction="#applyFilters" prefWidth="200"/>
+            </HBox>
+
+            <!-- Table of Tasks -->
+            <TableView fx:id="tasksTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="titleColumn" text="Titre" prefWidth="250"/>
+                    <TableColumn fx:id="projectColumn" text="Projet" prefWidth="180"/>
+                    <TableColumn fx:id="assignedColumn" text="Assigné à" prefWidth="150"/>
+                    <TableColumn fx:id="priorityColumn" text="Priorité" prefWidth="100"/>
+                    <TableColumn fx:id="statusColumn" text="Statut" prefWidth="120"/>
+                    <TableColumn fx:id="dueDateColumn" text="Date limite" prefWidth="120"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+    </center>
+
+</BorderPane>

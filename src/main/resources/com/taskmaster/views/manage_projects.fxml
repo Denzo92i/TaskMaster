@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.taskmaster.controllers.ProjectManagementController"
+            prefWidth="1200" prefHeight="700">
+
+    <left>
+        <VBox spacing="0" style="-fx-background-color: #2c3e50;" prefWidth="250">
+            <padding>
+                <Insets top="20" right="0" bottom="20" left="0"/>
+            </padding>
+
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+                <Label text="TASKMASTER" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label fx:id="welcomeLabel" text="Projets" style="-fx-text-fill: #ecf0f1; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <Separator style="-fx-background-color: #34495e;"/>
+
+            <VBox spacing="5" style="-fx-padding: 10;">
+                <Button text="⬅️ Retour Dashboard" onAction="#goBack"
+                        maxWidth="Infinity" style="-fx-background-color: #3498db; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="20" style="-fx-background-color: #ecf0f1;">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Label text="Gestion des Projets" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="➕ Nouveau Projet" onAction="#createNewProject"
+                        style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 16px;
+                        -fx-padding: 10 20; -fx-cursor: hand;"/>
+            </HBox>
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Filtrer par statut :" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="statusFilter" onAction="#applyFilter" prefWidth="200"/>
+            </HBox>
+
+            <TableView fx:id="projectsTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="nameColumn" text="Nom du Projet" prefWidth="300"/>
+                    <TableColumn fx:id="statusColumn" text="Statut" prefWidth="150"/>
+                    <TableColumn fx:id="startDateColumn" text="Date Début" prefWidth="150"/>
+                    <TableColumn fx:id="endDateColumn" text="Date Fin" prefWidth="150"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="200"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

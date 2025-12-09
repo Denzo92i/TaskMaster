@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.taskmaster.controllers.UserManagementController"
+            prefWidth="1200" prefHeight="700">
+
+    <left>
+        <VBox spacing="0" style="-fx-background-color: #2c3e50;" prefWidth="250">
+            <padding>
+                <Insets top="20" right="0" bottom="20" left="0"/>
+            </padding>
+
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+                <Label text="TASKMASTER" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label fx:id="welcomeLabel" text="Utilisateurs" style="-fx-text-fill: #ecf0f1; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <Separator style="-fx-background-color: #34495e;"/>
+
+            <VBox spacing="5" style="-fx-padding: 10;">
+                <Button text="⬅️ Retour Dashboard" onAction="#goBack"
+                        maxWidth="Infinity" style="-fx-background-color: #3498db; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="20" style="-fx-background-color: #ecf0f1;">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Label text="Gestion des Utilisateurs" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="➕ Nouvel Utilisateur" onAction="#createNewUser"
+                        style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 16px;
+                        -fx-padding: 10 20; -fx-cursor: hand;"/>
+            </HBox>
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Rechercher..." prefWidth="300"
+                           onAction="#searchUsers"/>
+                <Button text="🔍 Rechercher" onAction="#searchUsers"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 15;"/>
+
+                <Label text="Rôle :"/>
+                <ComboBox fx:id="roleFilter" onAction="#searchUsers" prefWidth="120"/>
+            </HBox>
+
+            <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="usernameColumn" text="Username" prefWidth="150"/>
+                    <TableColumn fx:id="nameColumn" text="Nom Complet" prefWidth="200"/>
+                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="250"/>
+                    <TableColumn fx:id="roleColumn" text="Rôle" prefWidth="100"/>
+                    <TableColumn fx:id="activeColumn" text="Statut" prefWidth="100"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="200"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

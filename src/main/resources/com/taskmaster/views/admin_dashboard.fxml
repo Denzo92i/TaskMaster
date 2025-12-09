@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.taskmaster.controllers.AdminDashboardController"
+            prefWidth="1200" prefHeight="700">
+
+    <!-- MENU LATERAL GAUCHE -->
+    <left>
+        <VBox spacing="0" style="-fx-background-color: #2c3e50;" prefWidth="250">
+            <padding>
+                <Insets top="20" right="0" bottom="20" left="0"/>
+            </padding>
+
+            <!-- En-tête -->
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+                <Label text="TASKMASTER" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label fx:id="welcomeLabel" text="Admin" style="-fx-text-fill: #ecf0f1; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <Separator style="-fx-background-color: #34495e;"/>
+
+            <!-- Boutons de navigation -->
+            <VBox spacing="5" style="-fx-padding: 10;">
+                <Button text="📊 Tableau de bord" onAction="#showDashboard"
+                        maxWidth="Infinity" style="-fx-background-color: #34495e; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+
+                <Button text="👥 Utilisateurs" onAction="#showUsers"
+                        maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+
+                <Button text="📁 Projets" onAction="#showProjects"
+                        maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+
+                <Button text="✅ Tâches" onAction="#showTasks"
+                        maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+
+                <Separator style="-fx-background-color: #34495e;"/>
+
+                <Button text="👤 Mon profil" onAction="#showProfile"
+                        maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+
+                <Button text="🚪 Déconnexion" onAction="#handleLogout"
+                        maxWidth="Infinity" style="-fx-background-color: #e74c3c; -fx-text-fill: white;
+                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- CONTENU CENTRAL -->
+    <center>
+        <VBox spacing="20" style="-fx-background-color: #ecf0f1;">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <Label text="Tableau de Bord Administrateur" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+
+            <!-- Statistiques (Cartes) -->
+            <HBox spacing="20">
+                <!-- Carte 1 : Utilisateurs -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;"
+                      HBox.hgrow="ALWAYS">
+                    <Label text="👥 Utilisateurs" style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
+                    <Label fx:id="userCountLabel" text="0" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #3498db;"/>
+                    <Label text="Total" style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"/>
+                </VBox>
+
+                <!-- Carte 2 : Projets -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;"
+                      HBox.hgrow="ALWAYS">
+                    <Label text="📁 Projets Actifs" style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
+                    <Label fx:id="projectCountLabel" text="0" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #2ecc71;"/>
+                    <Label text="En cours" style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"/>
+                </VBox>
+
+                <!-- Carte 3 : Tâches -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;"
+                      HBox.hgrow="ALWAYS">
+                    <Label text="✅ Tâches" style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
+                    <Label fx:id="taskCountLabel" text="0" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #e67e22;"/>
+                    <Label text="En cours" style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Tâches urgentes -->
+            <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;"
+                  VBox.vgrow="ALWAYS">
+                <Label text="🔥 Tâches Urgentes" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+                <TableView fx:id="urgentTasksTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="taskTitleColumn" text="Titre" prefWidth="300"/>
+                        <TableColumn fx:id="taskProjectColumn" text="Projet" prefWidth="200"/>
+                        <TableColumn fx:id="taskAssignedColumn" text="Assigné à" prefWidth="200"/>
+                        <TableColumn fx:id="taskDueDateColumn" text="Date limite" prefWidth="150"/>
+                        <TableColumn fx:id="taskStatusColumn" text="Statut" prefWidth="120"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>
