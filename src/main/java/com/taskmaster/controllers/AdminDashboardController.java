@@ -111,31 +111,8 @@ public class AdminDashboardController {
 
     @FXML
     private void showProfile() {
-        try {
-            // Vérifie que le fichier FXML est bien trouvé
-            System.out.println(getClass().getResource("/com/taskmaster/views/profile.fxml"));
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/taskmaster/views/profile.fxml"));
-            Parent root = loader.load();
-
-            // Récupérer le controller et passer l'utilisateur courant
-            ProfileController profileController = loader.getController();
-            User currentUser = SessionManager.getCurrentUser();
-            if (profileController != null && currentUser != null) {
-                profileController.setUser(currentUser);
-            }
-
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 600));
-            stage.setTitle("TaskMaster - Mon Profil");
-            stage.setMaximized(false);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Erreur", "Impossible de charger le profil.");
-        }
+        loadView("/com/taskmaster/views/profile.fxml", "Mon Profil", 1200, 700, true);
     }
-
 
     @FXML
     private void handleLogout() {
