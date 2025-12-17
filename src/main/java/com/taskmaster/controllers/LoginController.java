@@ -3,11 +3,13 @@ package com.taskmaster.controllers;
 import com.taskmaster.dao.UserDAO;
 import com.taskmaster.models.User;
 import com.taskmaster.utils.SessionManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
 public class LoginController {
@@ -57,9 +59,26 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 700));
+            stage.setScene(new Scene(root));
             stage.setTitle("TaskMaster - " + (user.isAdmin() ? "Admin" : "Dashboard"));
-            stage.setMaximized(true);
+
+            // Rendre la fenêtre redimensionnable
+            stage.setResizable(true);
+
+            // Configurer le fullscreen (cacher le message Échap et désactiver la touche)
+            stage.setFullScreenExitHint(""); // Cache le message "Appuyez sur Échap"
+            stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // Désactive Échap
+
+            // Mettre en FULLSCREEN immédiatement
+            stage.setFullScreen(true);
+
+            // Double vérification avec Platform.runLater
+            Platform.runLater(() -> {
+                if (!stage.isFullScreen()) {
+                    stage.setFullScreen(true);
+                    System.out.println("→ FullScreen FORCÉ après connexion");
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();

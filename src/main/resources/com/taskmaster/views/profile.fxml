@@ -23,33 +23,93 @@
             <Separator style="-fx-background-color: #34495e;"/>
 
             <VBox spacing="5" style="-fx-padding: 10;">
-                <Button text="⬅️ Retour Dashboard" onAction="#goBack"
+                <Button text="Retour Dashboard" onAction="#goBack"
                         maxWidth="Infinity"
-                        style="-fx-background-color: #3498db; -fx-text-fill: white;
-                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
             </VBox>
         </VBox>
     </left>
 
     <!-- Content -->
     <center>
-        <VBox spacing="20" style="-fx-background-color: #ecf0f1;" alignment="TOP_CENTER">
-            <padding>
-                <Insets top="30" right="30" bottom="30" left="30"/>
-            </padding>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #ecf0f1;">
+            <VBox spacing="30" style="-fx-background-color: #ecf0f1;" alignment="TOP_CENTER">
+                <padding>
+                    <Insets top="30" right="30" bottom="30" left="30"/>
+                </padding>
 
-            <Label text="Mon Profil" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+                <Label text="Mon Profil" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
 
-            <GridPane hgap="20" vgap="15">
-                <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <Label fx:id="nameLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <!-- Informations utilisateur -->
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" maxWidth="500">
+                    <Label text="Informations personnelles" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-                <Label text="Email :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <Label fx:id="emailLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <GridPane hgap="20" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="120"/>
+                            <ColumnConstraints/>
+                        </columnConstraints>
 
-                <Label text="Rôle :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <Label fx:id="roleLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-            </GridPane>
-        </VBox>
+                        <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="nameLabel" text="" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-text-fill: #34495e;"/>
+
+                        <Label text="Email :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="emailLabel" text="" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-text-fill: #34495e;"/>
+
+                        <Label text="Rôle :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="roleLabel" text="" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-text-fill: #34495e;"/>
+                    </GridPane>
+                </VBox>
+
+                <!-- Modifier l'email -->
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" maxWidth="500">
+                    <Label text="Modifier l'email" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                    <GridPane hgap="20" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="120"/>
+                            <ColumnConstraints/>
+                        </columnConstraints>
+
+                        <Label text="Nouvel email :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="newEmailField" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="exemple@email.com"/>
+                    </GridPane>
+
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button text="Mettre à jour l'email" onAction="#handleUpdateEmail"
+                                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 20; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Modifier le mot de passe -->
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" maxWidth="500">
+                    <Label text="Modifier le mot de passe" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                    <GridPane hgap="20" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="180"/>
+                            <ColumnConstraints/>
+                        </columnConstraints>
+
+                        <Label text="Mot de passe actuel :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <PasswordField fx:id="currentPasswordField" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Entrez votre mot de passe actuel"/>
+
+                        <Label text="Nouveau mot de passe :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <PasswordField fx:id="newPasswordField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="8+ caractères, majuscules, chiffres"/>
+
+                        <Label text="Confirmer :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Confirmez le nouveau mot de passe"/>
+                    </GridPane>
+
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button text="Mettre à jour le mot de passe" onAction="#handleUpdatePassword"
+                                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 10 20; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Message de feedback -->
+                <Label fx:id="messageLabel" text="" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            </VBox>
+        </ScrollPane>
     </center>
 </BorderPane>

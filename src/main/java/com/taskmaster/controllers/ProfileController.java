@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import com.taskmaster.utils.NavigationUtils;
 
 public class ProfileController {
 
@@ -143,13 +144,7 @@ public class ProfileController {
                     ? "/com/taskmaster/views/admin_dashboard.fxml"
                     : "/com/taskmaster/views/user_dashboard.fxml";
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(dashboardPath));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) nameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 700));
-            stage.setTitle("TaskMaster - Dashboard");
-            stage.setMaximized(true);
+            NavigationUtils.navigateTo(nameLabel, dashboardPath, "Dashboard");
 
         } catch (Exception e) {
             e.printStackTrace();
