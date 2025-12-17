@@ -2,15 +2,12 @@ package com.taskmaster.controllers;
 
 import com.taskmaster.dao.ProjectDAO;
 import com.taskmaster.models.Project;
+import com.taskmaster.utils.NavigationUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import java.time.LocalDate;
 
 public class ProjectManagementController {
@@ -31,7 +28,6 @@ public class ProjectManagementController {
     public void initialize() {
         welcomeLabel.setText("Gestion des Projets");
 
-        // Remplir le filtre de statut
         statusFilter.getItems().addAll("TOUS", "PLANNED", "IN_PROGRESS", "COMPLETED", "ON_HOLD");
         statusFilter.setValue("TOUS");
 
@@ -45,7 +41,6 @@ public class ProjectManagementController {
         startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
-        // Coloration dynamique du statut
         statusColumn.setCellFactory(column -> new TableCell<Project, String>() {
             @Override
             protected void updateItem(String status, boolean empty) {
@@ -73,7 +68,6 @@ public class ProjectManagementController {
             }
         });
 
-        // Colonne d’actions (Modifier / Supprimer)
         actionsColumn.setCellFactory(column -> new TableCell<Project, Void>() {
             private final Button editButton = new Button("Modifier");
             private final Button deleteButton = new Button("Supprimer");
@@ -111,7 +105,6 @@ public class ProjectManagementController {
         projectsTable.setItems(allProjects);
     }
 
-    // Méthode liée à statusFilter
     @FXML
     private void applyFilter() {
         String selected = statusFilter.getValue();
@@ -128,7 +121,6 @@ public class ProjectManagementController {
         projectsTable.setItems(filtered);
     }
 
-    // Méthode pour le bouton "Nouveau Projet" dans le FXML
     @FXML
     private void createNewProject() {
         showError("Fonctionnalité en développement (à implémenter)");
@@ -156,23 +148,7 @@ public class ProjectManagementController {
 
     @FXML
     private void goBack() {
-        loadView("/com/taskmaster/views/admin_dashboard.fxml", "Admin", 1200, 700, true);
-    }
-
-    private void loadView(String fxmlPath, String title, int width, int height, boolean maximized) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, width, height));
-            stage.setTitle("TaskMaster - " + title);
-            stage.setMaximized(maximized);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Erreur de chargement");
-        }
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/admin_dashboard.fxml", "Dashboard");
     }
 
     private void showSuccess(String msg) {

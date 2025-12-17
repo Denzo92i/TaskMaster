@@ -15,24 +15,37 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import com.taskmaster.utils.NavigationUtils;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
 public class TaskManagementController {
 
-    @FXML private Label welcomeLabel;
-    @FXML private ComboBox<String> filterStatus;
-    @FXML private ComboBox<String> filterPriority;
-    @FXML private ComboBox<String> filterProject;
-    @FXML private TableView<Task> tasksTable;
-    @FXML private TableColumn<Task, String> titleColumn;
-    @FXML private TableColumn<Task, String> projectColumn;
-    @FXML private TableColumn<Task, String> assignedColumn;
-    @FXML private TableColumn<Task, String> priorityColumn;
-    @FXML private TableColumn<Task, String> statusColumn;
-    @FXML private TableColumn<Task, String> dueDateColumn;
-    @FXML private TableColumn<Task, Void> actionsColumn;
+    @FXML
+    private Label welcomeLabel;
+    @FXML
+    private ComboBox<String> filterStatus;
+    @FXML
+    private ComboBox<String> filterPriority;
+    @FXML
+    private ComboBox<String> filterProject;
+    @FXML
+    private TableView<Task> tasksTable;
+    @FXML
+    private TableColumn<Task, String> titleColumn;
+    @FXML
+    private TableColumn<Task, String> projectColumn;
+    @FXML
+    private TableColumn<Task, String> assignedColumn;
+    @FXML
+    private TableColumn<Task, String> priorityColumn;
+    @FXML
+    private TableColumn<Task, String> statusColumn;
+    @FXML
+    private TableColumn<Task, String> dueDateColumn;
+    @FXML
+    private TableColumn<Task, Void> actionsColumn;
 
     private TaskDAO taskDAO = new TaskDAO();
     private ProjectDAO projectDAO = new ProjectDAO();
@@ -315,23 +328,7 @@ public class TaskManagementController {
 
     @FXML
     private void goBack() {
-        loadView("/com/taskmaster/views/admin_dashboard.fxml", "Admin", 1200, 700, true);
-    }
-
-    private void loadView(String fxmlPath, String title, int width, int height, boolean maximized) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, width, height));
-            stage.setTitle("TaskMaster - " + title);
-            stage.setMaximized(maximized);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Erreur de chargement");
-        }
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/admin_dashboard.fxml", "Dashboard");
     }
 
     private void showSuccess(String message) {

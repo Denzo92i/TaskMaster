@@ -4,8 +4,8 @@ import com.taskmaster.dao.ProjectDAO;
 import com.taskmaster.dao.TaskDAO;
 import com.taskmaster.dao.UserDAO;
 import com.taskmaster.models.Task;
-import com.taskmaster.models.User;
 import com.taskmaster.utils.SessionManager;
+import com.taskmaster.utils.NavigationUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -96,22 +96,22 @@ public class AdminDashboardController {
 
     @FXML
     private void showUsers() {
-        loadView("/com/taskmaster/views/manage_users.fxml", "Gestion Utilisateurs", 1200, 700, true);
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/manage_users.fxml", "Gestion Utilisateurs");
     }
 
     @FXML
     private void showProjects() {
-        loadView("/com/taskmaster/views/manage_projects.fxml", "Gestion Projets", 1200, 700, true);
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/manage_projects.fxml", "Gestion Projets");
     }
 
     @FXML
     private void showTasks() {
-        loadView("/com/taskmaster/views/manage_tasks.fxml", "Gestion Tâches", 1200, 700, true);
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/manage_tasks.fxml", "Gestion Tâches");
     }
 
     @FXML
     private void showProfile() {
-        loadView("/com/taskmaster/views/profile.fxml", "Mon Profil", 1200, 700, true);
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/profile.fxml", "Mon Profil");
     }
 
     @FXML
@@ -122,32 +122,23 @@ public class AdminDashboardController {
 
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             SessionManager.logout();
-            loadView("/com/taskmaster/views/login.fxml", "Connexion", 400, 550, false);
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/taskmaster/views/login.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = (Stage) welcomeLabel.getScene().getWindow();
+                stage.setScene(new Scene(root, 400, 550));
+                stage.setTitle("TaskMaster - Connexion");
+                stage.setResizable(false);
+                stage.setFullScreen(false);
+                stage.setMaximized(false);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                showError("Erreur de déconnexion", "Impossible de revenir à l'écran de connexion");
+            }
         }
-    }
-
-    private void loadView(String fxmlPath, String title, int width, int height, boolean maximized) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, width, height));
-            stage.setTitle("TaskMaster - " + title);
-            stage.setMaximized(maximized);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Erreur de chargement", "Impossible de charger la vue : " + e.getMessage());
-        }
-    }
-
-    private void showInfo(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     private void showError(String title, String message) {

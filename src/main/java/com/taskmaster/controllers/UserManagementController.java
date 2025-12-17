@@ -1,5 +1,6 @@
 package com.taskmaster.controllers;
 
+import com.taskmaster.utils.NavigationUtils;
 import com.taskmaster.dao.UserDAO;
 import com.taskmaster.models.User;
 import com.taskmaster.utils.PasswordHasher;
@@ -311,23 +312,7 @@ public class UserManagementController {
 
     @FXML
     private void goBack() {
-        loadView("/com/taskmaster/views/admin_dashboard.fxml", "Admin", 1200, 700, true);
-    }
-
-    private void loadView(String fxmlPath, String title, int width, int height, boolean maximized) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, width, height));
-            stage.setTitle("TaskMaster - " + title);
-            stage.setMaximized(maximized);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Erreur de chargement");
-        }
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/admin_dashboard.fxml", "Dashboard");
     }
 
     private void showSuccess(String message) {

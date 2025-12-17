@@ -3,6 +3,7 @@ package com.taskmaster.controllers;
 import com.taskmaster.dao.TaskDAO;
 import com.taskmaster.models.Task;
 import com.taskmaster.utils.SessionManager;
+import com.taskmaster.utils.NavigationUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -173,7 +174,7 @@ public class UserDashboardController {
 
     @FXML
     private void showProfile() {
-        showInfo("Fonctionnalité à venir", "Le profil utilisateur sera disponible prochainement.");
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/profile.fxml", "Mon Profil");
     }
 
     @FXML
@@ -184,23 +185,21 @@ public class UserDashboardController {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             SessionManager.logout();
-            loadView("/com/taskmaster/views/login.fxml", "Connexion", 400, 550, false);
-        }
-    }
 
-    private void loadView(String fxmlPath, String title, int width, int height, boolean maximized) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/taskmaster/views/login.fxml"));
+                Parent root = loader.load();
 
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, width, height));
-            stage.setTitle("TaskMaster - " + title);
-            stage.setMaximized(maximized);
+                Stage stage = (Stage) welcomeLabel.getScene().getWindow();
+                stage.setScene(new Scene(root, 400, 550));
+                stage.setTitle("TaskMaster - Connexion");
+                stage.setResizable(false);
+                stage.setFullScreen(false);
+                stage.setMaximized(false);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Erreur de chargement");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
