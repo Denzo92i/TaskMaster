@@ -139,6 +139,7 @@ public class UserManagementController {
     @FXML
     private void createNewUser() {
         Dialog<User> dialog = new Dialog<>();
+        dialog.initOwner(welcomeLabel.getScene().getWindow()); // Attacher à la fenêtre parent
         dialog.setTitle("Créer un Utilisateur");
         dialog.setHeaderText("Nouvel utilisateur");
 
@@ -169,70 +170,97 @@ public class UserManagementController {
         roleCombo.getItems().addAll("USER", "ADMIN");
         roleCombo.setValue("USER");
 
-        grid.add(new Label("Prénom :"), 0, 0);
-        grid.add(firstNameField, 1, 0);
-        grid.add(new Label("Nom :"), 0, 1);
-        grid.add(lastNameField, 1, 1);
-        grid.add(new Label("Email :"), 0, 2);
-        grid.add(emailField, 1, 2);
-        grid.add(new Label("Username :"), 0, 3);
-        grid.add(usernameField, 1, 3);
-        grid.add(new Label("Mot de passe :"), 0, 4);
-        grid.add(passwordField, 1, 4);
-        grid.add(new Label("Rôle :"), 0, 5);
-        grid.add(roleCombo, 1, 5);
+        // Label d'erreur en rouge
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        errorLabel.setWrapText(true);
+        errorLabel.setMaxWidth(300);
+
+        grid.add(errorLabel, 0, 0, 2, 1); // Span sur 2 colonnes
+        grid.add(new Label("Prénom :"), 0, 1);
+        grid.add(firstNameField, 1, 1);
+        grid.add(new Label("Nom :"), 0, 2);
+        grid.add(lastNameField, 1, 2);
+        grid.add(new Label("Email :"), 0, 3);
+        grid.add(emailField, 1, 3);
+        grid.add(new Label("Username :"), 0, 4);
+        grid.add(usernameField, 1, 4);
+        grid.add(new Label("Mot de passe :"), 0, 5);
+        grid.add(passwordField, 1, 5);
+        grid.add(new Label("Rôle :"), 0, 6);
+        grid.add(roleCombo, 1, 6);
 
         dialog.getDialogPane().setContent(grid);
 
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == createButtonType) {
-                if (!Validator.isValidName(firstNameField.getText())) {
-                    showError("Prénom invalide");
-                    return null;
-                }
-                if (!Validator.isValidName(lastNameField.getText())) {
-                    showError("Nom invalide");
-                    return null;
-                }
-                if (!Validator.isValidEmail(emailField.getText())) {
-                    showError("Email invalide");
-                    return null;
-                }
-                if (!Validator.isValidUsername(usernameField.getText())) {
-                    showError("Username invalide (3-20 caractères)");
-                    return null;
-                }
-                if (!Validator.isStrongPassword(passwordField.getText())) {
-                    showError(Validator.getPasswordError(passwordField.getText()));
-                    return null;
-                }
+        // Empêcher la fermeture du dialog en cas d'erreur de validation
+        javafx.scene.control.Button createButton = (javafx.scene.control.Button) dialog.getDialogPane().lookupButton(createButtonType);
+        createButton.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
+            // Réinitialiser le message d'erreur et son style
+            errorLabel.setText("");
+            errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
 
-                if (userDAO.emailExists(emailField.getText())) {
-                    showError("Cet email existe déjà");
-                    return null;
-                }
-                if (userDAO.usernameExists(usernameField.getText())) {
-                    showError("Ce username existe déjà");
-                    return null;
-                }
-
-                User newUser = new User();
-                newUser.setFirstName(firstNameField.getText().trim());
-                newUser.setLastName(lastNameField.getText().trim());
-                newUser.setEmail(emailField.getText().trim());
-                newUser.setUsername(usernameField.getText().trim());
-                newUser.setPassword(PasswordHasher.hashPassword(passwordField.getText()));
-                newUser.setRole(roleCombo.getValue());
-                newUser.setActive(true);
-
-                if (userDAO.create(newUser)) {
-                    showSuccess("Utilisateur créé avec succès !");
-                    loadUsers();
-                } else {
-                    showError("Erreur lors de la création");
-                }
+            // Validation
+            if (!Validator.isValidName(firstNameField.getText())) {
+                errorLabel.setText("❌ Prénom invalide");
+                event.consume();
+                return;
             }
-            return null;
+            if (!Validator.isValidName(lastNameField.getText())) {
+                errorLabel.setText("❌ Nom invalide");
+                event.consume();
+                return;
+            }
+            if (!Validator.isValidEmail(emailField.getText())) {
+                errorLabel.setText("❌ Email invalide");
+                event.consume();
+                return;
+            }
+            if (!Validator.isValidUsername(usernameField.getText())) {
+                errorLabel.setText("❌ Username invalide (3-20 caractères)");
+                event.consume();
+                return;
+            }
+            if (!Validator.isStrongPassword(passwordField.getText())) {
+                errorLabel.setText("❌ " + Validator.getPasswordError(passwordField.getText()));
+                event.consume();
+                return;
+            }
+
+            if (userDAO.emailExists(emailField.getText())) {
+                errorLabel.setText("❌ Cet email existe déjà");
+                event.consume();
+                return;
+            }
+            if (userDAO.usernameExists(usernameField.getText())) {
+                errorLabel.setText("❌ Ce username existe déjà");
+                event.consume();
+                return;
+            }
+
+            // Si toutes les validations passent, créer l'utilisateur
+            User newUser = new User();
+            newUser.setFirstName(firstNameField.getText().trim());
+            newUser.setLastName(lastNameField.getText().trim());
+            newUser.setEmail(emailField.getText().trim());
+            newUser.setUsername(usernameField.getText().trim());
+            newUser.setPassword(PasswordHasher.hashPassword(passwordField.getText()));
+            newUser.setRole(roleCombo.getValue());
+            newUser.setActive(true);
+
+            if (userDAO.create(newUser)) {
+                errorLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                errorLabel.setText("✅ Utilisateur créé avec succès !");
+                loadUsers();
+
+                // Fermer le dialog après 1 seconde
+                javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
+                pause.setOnFinished(e -> dialog.close());
+                pause.play();
+            } else {
+                errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                errorLabel.setText("❌ Erreur lors de la création");
+                event.consume();
+            }
         });
 
         dialog.showAndWait();
@@ -240,6 +268,7 @@ public class UserManagementController {
 
     private void editUser(User user) {
         Dialog<User> dialog = new Dialog<>();
+        dialog.initOwner(welcomeLabel.getScene().getWindow()); // Attacher à la fenêtre parent
         dialog.setTitle("Modifier l'utilisateur");
         dialog.setHeaderText("Modifier : " + user.getUsername());
 
@@ -251,6 +280,12 @@ public class UserManagementController {
         grid.setVgap(10);
         grid.setPadding(new javafx.geometry.Insets(20));
 
+        // Label d'erreur en rouge
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        errorLabel.setWrapText(true);
+        errorLabel.setMaxWidth(300);
+
         TextField firstNameField = new TextField(user.getFirstName());
         TextField lastNameField = new TextField(user.getLastName());
         TextField emailField = new TextField(user.getEmail());
@@ -260,35 +295,64 @@ public class UserManagementController {
         CheckBox activeCheck = new CheckBox();
         activeCheck.setSelected(user.isActive());
 
-        grid.add(new Label("Prénom :"), 0, 0);
-        grid.add(firstNameField, 1, 0);
-        grid.add(new Label("Nom :"), 0, 1);
-        grid.add(lastNameField, 1, 1);
-        grid.add(new Label("Email :"), 0, 2);
-        grid.add(emailField, 1, 2);
-        grid.add(new Label("Rôle :"), 0, 3);
-        grid.add(roleCombo, 1, 3);
-        grid.add(new Label("Actif :"), 0, 4);
-        grid.add(activeCheck, 1, 4);
+        grid.add(errorLabel, 0, 0, 2, 1); // Span sur 2 colonnes
+        grid.add(new Label("Prénom :"), 0, 1);
+        grid.add(firstNameField, 1, 1);
+        grid.add(new Label("Nom :"), 0, 2);
+        grid.add(lastNameField, 1, 2);
+        grid.add(new Label("Email :"), 0, 3);
+        grid.add(emailField, 1, 3);
+        grid.add(new Label("Rôle :"), 0, 4);
+        grid.add(roleCombo, 1, 4);
+        grid.add(new Label("Actif :"), 0, 5);
+        grid.add(activeCheck, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
 
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == saveButtonType) {
-                user.setFirstName(firstNameField.getText().trim());
-                user.setLastName(lastNameField.getText().trim());
-                user.setEmail(emailField.getText().trim());
-                user.setRole(roleCombo.getValue());
-                user.setActive(activeCheck.isSelected());
+        // Empêcher la fermeture du dialog en cas d'erreur de validation
+        javafx.scene.control.Button saveButton = (javafx.scene.control.Button) dialog.getDialogPane().lookupButton(saveButtonType);
+        saveButton.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
+            // Réinitialiser le message d'erreur et son style
+            errorLabel.setText("");
+            errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
 
-                if (userDAO.update(user)) {
-                    showSuccess("Utilisateur modifié !");
-                    loadUsers();
-                } else {
-                    showError("Erreur lors de la modification");
-                }
+            // Validation
+            if (!Validator.isValidName(firstNameField.getText())) {
+                errorLabel.setText("❌ Prénom invalide");
+                event.consume();
+                return;
             }
-            return null;
+            if (!Validator.isValidName(lastNameField.getText())) {
+                errorLabel.setText("❌ Nom invalide");
+                event.consume();
+                return;
+            }
+            if (!Validator.isValidEmail(emailField.getText())) {
+                errorLabel.setText("❌ Email invalide");
+                event.consume();
+                return;
+            }
+
+            user.setFirstName(firstNameField.getText().trim());
+            user.setLastName(lastNameField.getText().trim());
+            user.setEmail(emailField.getText().trim());
+            user.setRole(roleCombo.getValue());
+            user.setActive(activeCheck.isSelected());
+
+            if (userDAO.update(user)) {
+                errorLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                errorLabel.setText("✅ Utilisateur modifié avec succès !");
+                loadUsers();
+
+                // Fermer le dialog après 1 seconde
+                javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(1));
+                pause.setOnFinished(e -> dialog.close());
+                pause.play();
+            } else {
+                errorLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                errorLabel.setText("❌ Erreur lors de la modification");
+                event.consume();
+            }
         });
 
         dialog.showAndWait();
@@ -296,6 +360,7 @@ public class UserManagementController {
 
     private void deleteUser(User user) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(welcomeLabel.getScene().getWindow()); // Attacher à la fenêtre parent
         alert.setTitle("Confirmer la suppression");
         alert.setHeaderText("Supprimer l'utilisateur : " + user.getUsername());
         alert.setContentText("Cette action est irréversible !");
@@ -317,6 +382,7 @@ public class UserManagementController {
 
     private void showSuccess(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(welcomeLabel.getScene().getWindow()); // Attacher à la fenêtre parent
         alert.setTitle("Succès");
         alert.setContentText(message);
         alert.showAndWait();
@@ -324,6 +390,7 @@ public class UserManagementController {
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initOwner(welcomeLabel.getScene().getWindow()); // Attacher à la fenêtre parent
         alert.setTitle("Erreur");
         alert.setContentText(message);
         alert.showAndWait();

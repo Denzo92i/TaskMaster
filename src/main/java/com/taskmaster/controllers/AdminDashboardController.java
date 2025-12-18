@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AdminDashboardController {
@@ -102,6 +103,32 @@ public class AdminDashboardController {
     @FXML
     private void showProjects() {
         NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/manage_projects.fxml", "Gestion Projets");
+    }
+
+    @FXML
+    private void openCreateProjectPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/taskmaster/views/create_project_popup.fxml"));
+            Parent root = loader.load();
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Créer un nouveau projet");
+            popupStage.setScene(new Scene(root));
+            popupStage.initModality(Modality.APPLICATION_MODAL); // Bloque la fenêtre principale
+            popupStage.setResizable(false);
+
+            // Rafraîchir après fermeture du popup
+            popupStage.setOnHidden(e -> {
+                loadStatistics();
+                showProjects(); // Rediriger vers la liste des projets
+            });
+
+            popupStage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Impossible d'ouvrir le formulaire de création de projet.\nVérifiez que le fichier create_project_popup.fxml existe.");
+        }
     }
 
     @FXML

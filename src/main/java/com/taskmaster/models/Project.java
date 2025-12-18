@@ -15,7 +15,8 @@ public class Project {
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String status;  // PLANNED, IN_PROGRESS, COMPLETED, ON_HOLD
+    private String status;  // TODO, IN_PROGRESS, COMPLETED, ON_HOLD
+    private Integer managerId;  // ID du chef de projet (peut être null)
     private int createdBy;  // ID de l'utilisateur créateur
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -50,7 +51,7 @@ public class Project {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.status = "PLANNED";
+        this.status = "TODO";
         this.createdBy = createdBy;
     }
 
@@ -102,6 +103,14 @@ public class Project {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(Integer managerId) {
+        this.managerId = managerId;
     }
 
     public int getCreatedBy() {
@@ -162,6 +171,7 @@ public class Project {
                 ", status='" + status + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
+                ", managerId=" + managerId +
                 '}';
     }
 }
@@ -175,12 +185,13 @@ public class Project {
  *    - Ici : startDate/endDate = LocalDate (on ne veut que la date)
  *
  * 2. Status possibles
- *    - PLANNED : Projet prévu mais pas commencé
- *    - IN_PROGRESS : En cours de développement
- *    - COMPLETED : Terminé
- *    - ON_HOLD : En pause / suspendu
+ *    TODO, IN_PROGRESS, COMPLETED, ON_HOLD
  *
- * 3. createdBy
+ * 3. managerId (NOUVEAU)
+ *    - Integer (peut être null)
+ *    - Référence à un utilisateur qui gère le projet
+ *
+ * 4. createdBy
  *    - Stocke l'ID de l'utilisateur qui a créé le projet
  *    - Permet de savoir qui est responsable
  */

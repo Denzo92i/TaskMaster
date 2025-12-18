@@ -146,9 +146,10 @@ public class UserDashboardController {
 
     private void changeTaskStatus(Task task) {
         ChoiceDialog<String> dialog = new ChoiceDialog<>("IN_PROGRESS", "TODO", "IN_PROGRESS", "COMPLETED");
+        dialog.initOwner(welcomeLabel.getScene().getWindow());
         dialog.setTitle("Changer le statut");
-        dialog.setHeaderText("Tâche : " + task.getTitle());
-        dialog.setContentText("Nouveau statut :");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Tâche : " + task.getTitle() + "\nNouveau statut :");
 
         dialog.showAndWait().ifPresent(newStatus -> {
             if (taskDAO.updateStatus(task.getId(), newStatus)) {
@@ -169,7 +170,7 @@ public class UserDashboardController {
 
     @FXML
     private void showProjects() {
-        showInfo("Fonctionnalité à venir", "La consultation des projets sera disponible prochainement.");
+        NavigationUtils.navigateTo(welcomeLabel, "/com/taskmaster/views/user_projects.fxml", "Mes Projets");
     }
 
     @FXML
@@ -180,8 +181,10 @@ public class UserDashboardController {
     @FXML
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(welcomeLabel.getScene().getWindow());
         alert.setTitle("Déconnexion");
-        alert.setHeaderText("Voulez-vous vraiment vous déconnecter ?");
+        alert.setHeaderText(null);
+        alert.setContentText("Voulez-vous vraiment vous déconnecter ?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             SessionManager.logout();
@@ -205,6 +208,7 @@ public class UserDashboardController {
 
     private void showSuccess(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(welcomeLabel.getScene().getWindow());
         alert.setTitle("Succès");
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -213,6 +217,7 @@ public class UserDashboardController {
 
     private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(welcomeLabel.getScene().getWindow());
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -221,6 +226,7 @@ public class UserDashboardController {
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initOwner(welcomeLabel.getScene().getWindow());
         alert.setTitle("Erreur");
         alert.setHeaderText(null);
         alert.setContentText(message);

@@ -15,11 +15,11 @@ import java.util.List;
 public class ProjectDAO {
 
     /**
-     * CREATE - Crée un nouveau projet
+     * CREATE - Crée un nouveau projet avec manager_id
      */
     public boolean create(Project project) {
-        String sql = "INSERT INTO projects (name, description, start_date, end_date, status, created_by) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO projects (name, description, start_date, end_date, status, manager_id, created_by) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -29,7 +29,15 @@ public class ProjectDAO {
             stmt.setDate(3, Date.valueOf(project.getStartDate()));
             stmt.setDate(4, project.getEndDate() != null ? Date.valueOf(project.getEndDate()) : null);
             stmt.setString(5, project.getStatus());
-            stmt.setInt(6, project.getCreatedBy());
+
+            // Gérer manager_id (peut être null)
+            if (project.getManagerId() != null && project.getManagerId() > 0) {
+                stmt.setInt(6, project.getManagerId());
+            } else {
+                stmt.setNull(6, Types.INTEGER);
+            }
+
+            stmt.setInt(7, project.getCreatedBy());
 
             int rows = stmt.executeUpdate();
 
@@ -45,6 +53,7 @@ public class ProjectDAO {
 
         } catch (SQLException e) {
             System.err.println("Erreur création projet : " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
@@ -158,7 +167,7 @@ public class ProjectDAO {
      */
     public boolean update(Project project) {
         String sql = "UPDATE projects SET name = ?, description = ?, start_date = ?, " +
-                "end_date = ?, status = ? WHERE id = ?";
+                "end_date = ?, status = ?, manager_id = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -168,7 +177,15 @@ public class ProjectDAO {
             stmt.setDate(3, Date.valueOf(project.getStartDate()));
             stmt.setDate(4, project.getEndDate() != null ? Date.valueOf(project.getEndDate()) : null);
             stmt.setString(5, project.getStatus());
-            stmt.setInt(6, project.getId());
+
+            // Gérer manager_id
+            if (project.getManagerId() != null && project.getManagerId() > 0) {
+                stmt.setInt(6, project.getManagerId());
+            } else {
+                stmt.setNull(6, Types.INTEGER);
+            }
+
+            stmt.setInt(7, project.getId());
 
             return stmt.executeUpdate() > 0;
 
@@ -267,7 +284,7 @@ public class ProjectDAO {
      * Extrait un Project depuis ResultSet
      */
     private Project extractProjectFromResultSet(ResultSet rs) throws SQLException {
-        return new Project(
+        Project project = new Project(
                 rs.getInt("id"),
                 rs.getString("name"),
                 rs.getString("description"),
@@ -278,20 +295,36 @@ public class ProjectDAO {
                 rs.getTimestamp("created_at").toLocalDateTime(),
                 rs.getTimestamp("updated_at").toLocalDateTime()
         );
+
+        // Ajouter manager_id si disponible
+        try {
+            int managerId = rs.getInt("manager_id");
+            if (!rs.wasNull()) {
+                project.setManagerId(managerId);
+            }
+        } catch (SQLException e) {
+            // Colonne manager_id n'existe pas dans le résultat
+        }
+
+        return project;
     }
 }
 
 /*
  * ===== NOTES IMPORTANTES =====
  *
- * 1. Date.valueOf()
+ * 1. manager_id ajouté
+ *    - Permet d'assigner un chef de projet
+ *    - Peut être NULL
+ *
+ * 2. Date.valueOf()
  *    - Convertit LocalDate → java.sql.Date
  *    - Nécessaire pour les requêtes SQL
  *
- * 2. Suppression en cascade
+ * 3. Suppression en cascade
  *    - DELETE FROM projects → supprime aussi toutes les tâches
  *    - Défini dans la BDD (ON DELETE CASCADE)
  *
- * 3. Status possibles
- *    PLANNED, IN_PROGRESS, COMPLETED, ON_HOLD
+ * 4. Status possibles
+ *    TODO, IN_PROGRESS, COMPLETED, ON_HOLD
  */

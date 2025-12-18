@@ -51,16 +51,16 @@
                         -fx-padding: 10 20; -fx-cursor: hand;"/>
             </HBox>
 
+            <!-- Feedback Label -->
+            <Label fx:id="feedbackLabel" text="" style="-fx-font-weight: bold;" visible="false"/>
+
             <!-- Filters -->
             <HBox spacing="15" alignment="CENTER_LEFT">
                 <Label text="Filtrer :" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
-
                 <Label text="Statut :"/>
                 <ComboBox fx:id="filterStatus" onAction="#applyFilters" prefWidth="150"/>
-
                 <Label text="Priorité :"/>
                 <ComboBox fx:id="filterPriority" onAction="#applyFilters" prefWidth="150"/>
-
                 <Label text="Projet :"/>
                 <ComboBox fx:id="filterProject" onAction="#applyFilters" prefWidth="200"/>
             </HBox>
@@ -77,7 +77,6 @@
                     <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180"/>
                 </columns>
             </TableView>
-
         </VBox>
     </center>
 

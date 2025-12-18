@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.taskmaster.controllers.CreateProjectPopupController"
+      spacing="20" maxWidth="600"
+      style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;
+             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 5);">
+
+    <!-- En-tête -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="📋" style="-fx-font-size: 24px;"/>
+        <Label text="Créer un nouveau projet"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✕" onAction="#handleCancel"
+                style="-fx-background-color: transparent; -fx-text-fill: #7f8c8d;
+                       -fx-font-size: 20px; -fx-cursor: hand; -fx-padding: 5;"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Message d'erreur -->
+    <Label fx:id="errorLabel"
+           style="-fx-text-fill: #e74c3c; -fx-font-size: 14px; -fx-font-weight: bold;
+                  -fx-background-color: #fadbd8; -fx-padding: 12; -fx-background-radius: 5;"
+           wrapText="true" managed="false" visible="false"/>
+
+    <!-- Formulaire en grille -->
+    <GridPane hgap="15" vgap="18">
+        <columnConstraints>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+            <ColumnConstraints minWidth="400" prefWidth="400"/>
+        </columnConstraints>
+
+        <!-- Nom du projet -->
+        <Label text="Titre :" GridPane.rowIndex="0"
+               style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <TextField fx:id="projectNameField" promptText="Nom du projet"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"
+                   style="-fx-font-size: 14px; -fx-padding: 8;"/>
+
+        <!-- Description -->
+        <Label text="Description :" GridPane.rowIndex="1"
+               style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <TextArea fx:id="projectDescriptionArea" promptText="Description du projet..."
+                  GridPane.columnIndex="1" GridPane.rowIndex="1"
+                  prefRowCount="4" wrapText="true"
+                  style="-fx-font-size: 14px;"/>
+
+        <!-- Date de début -->
+        <Label text="Date début :" GridPane.rowIndex="2"
+               style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <DatePicker fx:id="startDatePicker"
+                    GridPane.columnIndex="1" GridPane.rowIndex="2"
+                    prefWidth="200" style="-fx-font-size: 14px;"/>
+
+        <!-- Date de fin -->
+        <Label text="Date fin :" GridPane.rowIndex="3"
+               style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <DatePicker fx:id="endDatePicker"
+                    GridPane.columnIndex="1" GridPane.rowIndex="3"
+                    prefWidth="200" style="-fx-font-size: 14px;"/>
+
+        <!-- Statut -->
+        <Label text="Statut :" GridPane.rowIndex="4"
+               style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <ComboBox fx:id="statusComboBox"
+                  GridPane.columnIndex="1" GridPane.rowIndex="4"
+                  prefWidth="200" style="-fx-font-size: 14px;"/>
+
+        <!-- Chef de projet -->
+        <Label text="Assigné à :" GridPane.rowIndex="5"
+               style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <ComboBox fx:id="managerComboBox"
+                  GridPane.columnIndex="1" GridPane.rowIndex="5"
+                  prefWidth="300" style="-fx-font-size: 14px;"/>
+    </GridPane>
+
+    <!-- Boutons -->
+    <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+        <Button text="Annuler" onAction="#handleCancel"
+                style="-fx-background-color: #95a5a6; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-padding: 10 30; -fx-cursor: hand;
+                       -fx-background-radius: 5;"/>
+
+        <Button text="Créer" onAction="#handleCreateProject"
+                style="-fx-background-color: #3498db; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-padding: 10 30; -fx-cursor: hand;
+                       -fx-background-radius: 5; -fx-font-weight: bold;"/>
+    </HBox>
+</VBox>

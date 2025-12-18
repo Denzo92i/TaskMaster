@@ -65,7 +65,6 @@
 
             <!-- Statistiques (Cartes) -->
             <HBox spacing="20">
-                <!-- Carte 1 : Utilisateurs -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;"
                       HBox.hgrow="ALWAYS">
                     <Label text="👥 Utilisateurs" style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
@@ -73,7 +72,6 @@
                     <Label text="Total" style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"/>
                 </VBox>
 
-                <!-- Carte 2 : Projets -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;"
                       HBox.hgrow="ALWAYS">
                     <Label text="📁 Projets Actifs" style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
@@ -81,7 +79,6 @@
                     <Label text="En cours" style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"/>
                 </VBox>
 
-                <!-- Carte 3 : Tâches -->
                 <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;"
                       HBox.hgrow="ALWAYS">
                     <Label text="✅ Tâches" style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
