@@ -11,12 +11,17 @@ import javafx.application.Platform;
 import javafx.scene.input.KeyCombination;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class NavigationUtils {
+
+    // 🚀 Cache pour le chemin CSS (évite de le rechercher à chaque fois)
+    private static String cachedCssPath = null;
 
     /**
      * Navigates to a new view while FORCING fullscreen state to remain active.
      * Automatically applies the theme.css to every page.
+     * OPTIMIZED: Réduit les appels inutiles et améliore la fluidité.
      *
      * @param sourceNode A node from the current scene (used to get the stage).
      * @param fxmlPath   The resource path to the FXML file.
@@ -30,60 +35,37 @@ public class NavigationUtils {
             boolean wasFullScreen = stage.isFullScreen();
             boolean wasMaximized = stage.isMaximized();
 
-            System.out.println("=== NAVIGATION ===");
-            System.out.println("Avant navigation - FullScreen: " + wasFullScreen + ", Maximized: " + wasMaximized);
-
-            // Charger la nouvelle vue
+            // 🚀 OPTIMISATION 1: Charger le FXML de manière optimisée
             FXMLLoader loader = new FXMLLoader(NavigationUtils.class.getResource(fxmlPath));
+            loader.setClassLoader(NavigationUtils.class.getClassLoader());
             Parent root = loader.load();
 
-            // Créer la scène SANS dimensions fixes
-            Scene scene = new Scene(root);
+            // 🚀 OPTIMISATION 2: Réutiliser la scène existante si possible
+            Scene currentScene = stage.getScene();
+            Scene scene;
 
-            // 🎨 APPLIQUER AUTOMATIQUEMENT LE THEME CSS
-            try {
-                scene.getStylesheets().add(
-                        NavigationUtils.class.getResource("/com/taskmaster/views/theme.css").toExternalForm()
-                );
-                System.out.println("✅ Theme CSS appliqué à: " + title);
-            } catch (Exception e) {
-                System.err.println("⚠️ Impossible de charger theme.css : " + e.getMessage());
+            if (currentScene != null) {
+                // Réutiliser la scène existante (plus rapide)
+                currentScene.setRoot(root);
+                scene = currentScene;
+            } else {
+                // Créer une nouvelle scène seulement si nécessaire
+                scene = new Scene(root);
+                stage.setScene(scene);
             }
 
-            stage.setScene(scene);
+            // 🎨 OPTIMISATION 3: Appliquer le CSS une seule fois avec cache
+            applyCssToScene(scene, title);
+
+            // 🚀 OPTIMISATION 4: Mettre à jour le titre avant les opérations visuelles
             stage.setTitle("TaskMaster - " + title);
 
             // Configurer le fullscreen (cacher le message Échap)
-            stage.setFullScreenExitHint(""); // Cache le message "Appuyez sur Échap"
-            stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // Désactive Échap
+            stage.setFullScreenExitHint("");
+            stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-            // FORCER le retour à l'état fullscreen/maximized
-            if (wasFullScreen) {
-                // Si c'était en fullscreen, forcer le fullscreen immédiatement
-                stage.setFullScreen(true);
-
-                // Double vérification avec Platform.runLater
-                Platform.runLater(() -> {
-                    if (!stage.isFullScreen()) {
-                        stage.setFullScreen(true);
-                        System.out.println("→ FullScreen FORCÉ (runLater)");
-                    }
-                    System.out.println("→ FullScreen: " + stage.isFullScreen());
-                });
-
-            } else if (wasMaximized) {
-                stage.setMaximized(true);
-
-                Platform.runLater(() -> {
-                    if (!stage.isMaximized()) {
-                        stage.setMaximized(true);
-                        System.out.println("→ Maximized FORCÉ (runLater)");
-                    }
-                    System.out.println("→ Maximized: " + stage.isMaximized());
-                });
-            }
-
-            System.out.println("===================");
+            // 🚀 OPTIMISATION 5: Restaurer l'état en une seule fois
+            restoreWindowState(stage, wasFullScreen, wasMaximized);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,23 +73,96 @@ public class NavigationUtils {
         }
     }
 
+    /**
+     * 🎨 Applique le CSS de manière optimisée avec cache
+     */
+    private static void applyCssToScene(Scene scene, String pageTitle) {
+        try {
+            // Si le CSS est déjà chargé dans la scène, ne rien faire
+            if (!scene.getStylesheets().isEmpty()) {
+                return;
+            }
+
+            // Charger le chemin CSS une seule fois
+            if (cachedCssPath == null) {
+                URL cssUrl = NavigationUtils.class.getResource("/com/taskmaster/views/theme.css");
+                if (cssUrl != null) {
+                    cachedCssPath = cssUrl.toExternalForm();
+                } else {
+                    System.err.println("⚠️ theme.css introuvable !");
+                    return;
+                }
+            }
+
+            // Appliquer le CSS
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add(cachedCssPath);
+
+        } catch (Exception e) {
+            System.err.println("⚠️ Erreur lors de l'application du CSS : " + e.getMessage());
+        }
+    }
+
+    /**
+     * 🚀 Restaure l'état de la fenêtre de manière optimisée
+     */
+    private static void restoreWindowState(Stage stage, boolean wasFullScreen, boolean wasMaximized) {
+        if (wasFullScreen) {
+            // FORCER le fullscreen immédiatement
+            stage.setFullScreen(true);
+
+            // Vérification rapide après le prochain frame
+            Platform.runLater(() -> {
+                if (!stage.isFullScreen()) {
+                    stage.setFullScreen(true);
+                }
+            });
+
+        } else if (wasMaximized) {
+            stage.setMaximized(true);
+
+            Platform.runLater(() -> {
+                if (!stage.isMaximized()) {
+                    stage.setMaximized(true);
+                }
+            });
+        }
+    }
+
+    /**
+     * Affiche un message d'erreur avec le thème appliqué
+     */
     private static void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
 
-        // 🎨 Appliquer le thème CSS aux messages d'erreur
+        // 🎨 Appliquer le thème CSS au dialog
         try {
-            DialogPane dialogPane = alert.getDialogPane();
-            dialogPane.getStylesheets().add(
-                    NavigationUtils.class.getResource("/com/taskmaster/views/theme.css").toExternalForm()
-            );
-            dialogPane.getStyleClass().add("dialog-pane");
+            if (cachedCssPath == null) {
+                URL cssUrl = NavigationUtils.class.getResource("/com/taskmaster/views/theme.css");
+                if (cssUrl != null) {
+                    cachedCssPath = cssUrl.toExternalForm();
+                }
+            }
+
+            if (cachedCssPath != null) {
+                DialogPane dialogPane = alert.getDialogPane();
+                dialogPane.getStylesheets().add(cachedCssPath);
+                dialogPane.getStyleClass().add("dialog-pane");
+            }
         } catch (Exception e) {
             System.err.println("⚠️ Impossible d'appliquer le CSS au dialog d'erreur");
         }
 
         alert.showAndWait();
+    }
+
+    /**
+     * 🧹 Méthode utilitaire pour nettoyer le cache si nécessaire
+     */
+    public static void clearCache() {
+        cachedCssPath = null;
     }
 }
