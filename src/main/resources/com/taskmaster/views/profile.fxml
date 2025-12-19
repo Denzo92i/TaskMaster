@@ -10,39 +10,44 @@
 
     <!-- Sidebar -->
     <left>
-        <VBox spacing="0" style="-fx-background-color: #2c3e50;" prefWidth="200">
+        <VBox spacing="0" styleClass="sidebar" prefWidth="200">
             <padding>
                 <Insets top="20" right="0" bottom="20" left="0"/>
             </padding>
 
-            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
-                <Label text="TASKMASTER" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
-                <Label text="Profil" style="-fx-text-fill: #ecf0f1; -fx-font-size: 14px;"/>
+            <VBox alignment="CENTER" spacing="10">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <Label text="TASKMASTER" styleClass="title"/>
+                <Label text="Profil" styleClass="subtitle"/>
             </VBox>
 
-            <Separator style="-fx-background-color: #34495e;"/>
+            <Separator/>
 
-            <VBox spacing="5" style="-fx-padding: 10;">
+            <VBox spacing="5">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
                 <Button text="Retour Dashboard" onAction="#goBack"
-                        maxWidth="Infinity"
-                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                        maxWidth="Infinity" styleClass="nav-button"/>
             </VBox>
         </VBox>
     </left>
 
     <!-- Content -->
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: #ecf0f1;">
-            <VBox spacing="30" style="-fx-background-color: #ecf0f1;" alignment="TOP_CENTER">
+        <ScrollPane fitToWidth="true" styleClass="content-area">
+            <VBox spacing="30" alignment="TOP_CENTER">
                 <padding>
                     <Insets top="30" right="30" bottom="30" left="30"/>
                 </padding>
 
-                <Label text="Mon Profil" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Mon Profil" styleClass="page-title"/>
 
                 <!-- Informations utilisateur -->
-                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" maxWidth="500">
-                    <Label text="Informations personnelles" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <VBox spacing="15" styleClass="profile-card" maxWidth="500">
+                    <Label text="Informations personnelles" styleClass="section-title"/>
 
                     <GridPane hgap="20" vgap="15">
                         <columnConstraints>
@@ -50,20 +55,20 @@
                             <ColumnConstraints/>
                         </columnConstraints>
 
-                        <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="nameLabel" text="" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-text-fill: #34495e;"/>
+                        <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="form-label"/>
+                        <Label fx:id="nameLabel" text="" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="profile-value"/>
 
-                        <Label text="Email :" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="emailLabel" text="" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-text-fill: #34495e;"/>
+                        <Label text="Email :" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="form-label"/>
+                        <Label fx:id="emailLabel" text="" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="profile-value"/>
 
-                        <Label text="Rôle :" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="roleLabel" text="" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-text-fill: #34495e;"/>
+                        <Label text="Rôle :" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="form-label"/>
+                        <Label fx:id="roleLabel" text="" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="profile-value"/>
                     </GridPane>
                 </VBox>
 
                 <!-- Modifier l'email -->
-                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" maxWidth="500">
-                    <Label text="Modifier l'email" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <VBox spacing="15" styleClass="profile-card" maxWidth="500">
+                    <Label text="Modifier l'email" styleClass="section-title"/>
 
                     <GridPane hgap="20" vgap="15">
                         <columnConstraints>
@@ -76,14 +81,13 @@
                     </GridPane>
 
                     <HBox spacing="10" alignment="CENTER">
-                        <Button text="Mettre à jour l'email" onAction="#handleUpdateEmail"
-                                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 20; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                        <Button text="Mettre à jour l'email" onAction="#handleUpdateEmail"/>
                     </HBox>
                 </VBox>
 
                 <!-- Modifier le mot de passe -->
-                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" maxWidth="500">
-                    <Label text="Modifier le mot de passe" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <VBox spacing="15" styleClass="profile-card" maxWidth="500">
+                    <Label text="Modifier le mot de passe" styleClass="section-title"/>
 
                     <GridPane hgap="20" vgap="15">
                         <columnConstraints>
@@ -103,7 +107,7 @@
 
                     <HBox spacing="10" alignment="CENTER">
                         <Button text="Mettre à jour le mot de passe" onAction="#handleUpdatePassword"
-                                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 10 20; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                                styleClass="button, success-button"/>
                     </HBox>
                 </VBox>
 

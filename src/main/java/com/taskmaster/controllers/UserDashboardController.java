@@ -47,6 +47,7 @@ public class UserDashboardController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 
+        // Styles avec couleurs du thème
         priorityColumn.setCellFactory(column -> new TableCell<Task, String>() {
             @Override
             protected void updateItem(String priority, boolean empty) {
@@ -58,16 +59,16 @@ public class UserDashboardController {
                     setText(priority);
                     switch (priority) {
                         case "URGENT":
-                            setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+                            setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-alignment: CENTER;");
                             break;
                         case "HIGH":
-                            setStyle("-fx-background-color: #e67e22; -fx-text-fill: white;");
+                            setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-alignment: CENTER;");
                             break;
                         case "MEDIUM":
-                            setStyle("-fx-background-color: #f39c12; -fx-text-fill: white;");
+                            setStyle("-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-alignment: CENTER;");
                             break;
                         case "LOW":
-                            setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white;");
+                            setStyle("-fx-background-color: #64748B; -fx-text-fill: white; -fx-alignment: CENTER;");
                             break;
                     }
                 }
@@ -85,13 +86,13 @@ public class UserDashboardController {
                     setText(status);
                     switch (status) {
                         case "TODO":
-                            setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+                            setStyle("-fx-background-color: #6366F1; -fx-text-fill: white; -fx-alignment: CENTER;");
                             break;
                         case "IN_PROGRESS":
-                            setStyle("-fx-background-color: #f39c12; -fx-text-fill: white;");
+                            setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-alignment: CENTER;");
                             break;
                         case "COMPLETED":
-                            setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                            setStyle("-fx-background-color: #10B981; -fx-text-fill: white; -fx-alignment: CENTER;");
                             break;
                     }
                 }
@@ -99,10 +100,10 @@ public class UserDashboardController {
         });
 
         actionsColumn.setCellFactory(column -> new TableCell<Task, Void>() {
-            private final Button changeStatusButton = new Button("Changer Statut");
+            private final Button changeStatusButton = new Button("📝 Changer Statut");
 
             {
-                changeStatusButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+                changeStatusButton.getStyleClass().addAll("button");
                 changeStatusButton.setOnAction(event -> {
                     Task task = getTableView().getItems().get(getIndex());
                     changeTaskStatus(task);
@@ -151,13 +152,20 @@ public class UserDashboardController {
         dialog.setHeaderText(null);
         dialog.setContentText("Tâche : " + task.getTitle() + "\nNouveau statut :");
 
+        // 🎨 Appliquer le thème au dialog
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
         dialog.showAndWait().ifPresent(newStatus -> {
             if (taskDAO.updateStatus(task.getId(), newStatus)) {
-                showSuccess("Statut mis à jour !");
+                showSuccess("✓ Statut mis à jour !");
                 loadMyTasks();
                 filterTasks();
             } else {
-                showError("Erreur lors de la mise à jour");
+                showError("✗ Erreur lors de la mise à jour");
             }
         });
     }
@@ -186,6 +194,13 @@ public class UserDashboardController {
         alert.setHeaderText(null);
         alert.setContentText("Voulez-vous vraiment vous déconnecter ?");
 
+        // 🎨 Appliquer le thème CSS au dialog de confirmation
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
         if (alert.showAndWait().get() == ButtonType.OK) {
             SessionManager.logout();
 
@@ -194,7 +209,14 @@ public class UserDashboardController {
                 Parent root = loader.load();
 
                 Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-                stage.setScene(new Scene(root, 400, 550));
+                Scene scene = new Scene(root, 400, 550);
+
+                // 🎨 CORRECTION: Appliquer le thème CSS à la page de connexion
+                scene.getStylesheets().add(
+                        getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+                );
+
+                stage.setScene(scene);
                 stage.setTitle("TaskMaster - Connexion");
                 stage.setResizable(false);
                 stage.setFullScreen(false);
@@ -212,6 +234,14 @@ public class UserDashboardController {
         alert.setTitle("Succès");
         alert.setHeaderText(null);
         alert.setContentText(message);
+
+        // 🎨 Appliquer le thème
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
         alert.showAndWait();
     }
 
@@ -221,6 +251,14 @@ public class UserDashboardController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+
+        // 🎨 Appliquer le thème
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
         alert.showAndWait();
     }
 
@@ -230,6 +268,14 @@ public class UserDashboardController {
         alert.setTitle("Erreur");
         alert.setHeaderText(null);
         alert.setContentText(message);
+
+        // 🎨 Appliquer le thème
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
         alert.showAndWait();
     }
 }

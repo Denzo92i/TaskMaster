@@ -24,6 +24,9 @@ public class LoginController {
     @FXML
     public void initialize() {
         errorLabel.setText("");
+
+        // Permettre la connexion avec la touche Enter
+        passwordField.setOnAction(e -> handleLogin());
     }
 
     @FXML
@@ -59,7 +62,19 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+
+            // 🎨 CORRECTION CRITIQUE : Appliquer le CSS AVANT de définir la scène
+            try {
+                String cssPath = getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm();
+                scene.getStylesheets().add(cssPath);
+                System.out.println("✅ Thème CSS appliqué au dashboard lors de la connexion");
+            } catch (Exception cssError) {
+                System.err.println("⚠️ Impossible de charger le CSS: " + cssError.getMessage());
+                cssError.printStackTrace();
+            }
+
+            stage.setScene(scene);
             stage.setTitle("TaskMaster - " + (user.isAdmin() ? "Admin" : "Dashboard"));
 
             // Rendre la fenêtre redimensionnable
@@ -86,7 +101,35 @@ public class LoginController {
         }
     }
 
+    @FXML
+    private void handleRegister() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/taskmaster/views/register.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            Scene scene = new Scene(root, 450, 600);
+
+            // 🎨 Appliquer le CSS à la page d'inscription
+            try {
+                scene.getStylesheets().add(
+                        getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+                );
+            } catch (Exception cssError) {
+                System.err.println("⚠️ CSS non chargé pour register");
+            }
+
+            stage.setScene(scene);
+            stage.setTitle("TaskMaster - Inscription");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur lors du chargement de la page d'inscription");
+        }
+    }
+
     private void showError(String message) {
         errorLabel.setText("❌ " + message);
+        errorLabel.setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold;");
     }
 }

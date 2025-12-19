@@ -25,6 +25,12 @@ public class Main extends Application {
 
             // Configuration de la fenêtre
             Scene scene = new Scene(root, 400, 550);
+
+            // 🔥 Chargement du thème CSS noir & violet
+            scene.getStylesheets().add(
+                    getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+            );
+
             primaryStage.setTitle("TaskMaster - Connexion");
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);

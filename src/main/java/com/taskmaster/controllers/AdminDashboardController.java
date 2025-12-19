@@ -36,6 +36,9 @@ public class AdminDashboardController {
 
     @FXML
     public void initialize() {
+        // 🎨 CORRECTION 1: Appliquer le CSS dès l'initialisation
+        applyThemeToCurrentScene();
+
         if (SessionManager.isLoggedIn()) {
             welcomeLabel.setText("Bienvenue, " + SessionManager.getCurrentUserFullName());
         }
@@ -43,6 +46,29 @@ public class AdminDashboardController {
         loadStatistics();
         setupUrgentTasksTable();
         loadUrgentTasks();
+    }
+
+    /**
+     * 🎨 NOUVELLE MÉTHODE : Applique le thème CSS à la scène actuelle
+     */
+    private void applyThemeToCurrentScene() {
+        try {
+            if (welcomeLabel != null && welcomeLabel.getScene() != null) {
+                Scene scene = welcomeLabel.getScene();
+                String cssPath = getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm();
+
+                // Nettoyer les anciens styles
+                scene.getStylesheets().clear();
+
+                // Ajouter le nouveau thème
+                scene.getStylesheets().add(cssPath);
+
+                System.out.println("✅ Thème CSS appliqué au dashboard");
+            }
+        } catch (Exception e) {
+            System.err.println("⚠️ Erreur lors de l'application du CSS: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void loadStatistics() {
@@ -68,9 +94,9 @@ public class AdminDashboardController {
                 } else {
                     setText(status);
                     switch (status) {
-                        case "TODO" -> setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
-                        case "IN_PROGRESS" -> setStyle("-fx-background-color: #f39c12; -fx-text-fill: white;");
-                        case "COMPLETED" -> setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                        case "TODO" -> setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
+                        case "IN_PROGRESS" -> setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
+                        case "COMPLETED" -> setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;");
                         default -> setStyle("");
                     }
                 }
@@ -113,14 +139,18 @@ public class AdminDashboardController {
 
             Stage popupStage = new Stage();
             popupStage.setTitle("Créer un nouveau projet");
-            popupStage.setScene(new Scene(root));
-            popupStage.initModality(Modality.APPLICATION_MODAL); // Bloque la fenêtre principale
+
+            Scene scene = new Scene(root);
+            // 🎨 Appliquer le thème CSS au popup
+            scene.getStylesheets().add(getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm());
+
+            popupStage.setScene(scene);
+            popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setResizable(false);
 
-            // Rafraîchir après fermeture du popup
             popupStage.setOnHidden(e -> {
                 loadStatistics();
-                showProjects(); // Rediriger vers la liste des projets
+                showProjects();
             });
 
             popupStage.showAndWait();
@@ -147,6 +177,13 @@ public class AdminDashboardController {
         alert.setTitle("Déconnexion");
         alert.setHeaderText("Voulez-vous vraiment vous déconnecter ?");
 
+        // 🎨 Appliquer le thème CSS au dialog de déconnexion
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             SessionManager.logout();
 
@@ -155,7 +192,12 @@ public class AdminDashboardController {
                 Parent root = loader.load();
 
                 Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-                stage.setScene(new Scene(root, 400, 550));
+                Scene scene = new Scene(root, 400, 550);
+
+                // 🎨 Appliquer le thème CSS à la page de connexion
+                scene.getStylesheets().add(getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm());
+
+                stage.setScene(scene);
                 stage.setTitle("TaskMaster - Connexion");
                 stage.setResizable(false);
                 stage.setFullScreen(false);
@@ -173,6 +215,14 @@ public class AdminDashboardController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+
+        // 🎨 Appliquer le thème CSS aux messages d'erreur
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/taskmaster/views/theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
         alert.showAndWait();
     }
 }

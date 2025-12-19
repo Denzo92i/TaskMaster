@@ -27,7 +27,7 @@ import java.time.LocalDate;
 public class TaskManagementController {
 
     @FXML private Label welcomeLabel;
-    @FXML private Label feedbackLabel; // 🔥 feedback “toast”
+    @FXML private Label feedbackLabel;
     @FXML private ComboBox<String> filterStatus;
     @FXML private ComboBox<String> filterPriority;
     @FXML private ComboBox<String> filterProject;
@@ -68,7 +68,6 @@ public class TaskManagementController {
     private void setupTable() {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        // Correction String -> ObservableValue<String>
         projectColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(
                         cellData.getValue().getProjectName() != null ? cellData.getValue().getProjectName() : "Non défini"
@@ -85,45 +84,55 @@ public class TaskManagementController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 
-        // Styles priority
+        // Styles priority avec classes CSS du thème
         priorityColumn.setCellFactory(col -> new TableCell<Task, String>() {
             @Override
             protected void updateItem(String value, boolean empty) {
                 super.updateItem(value, empty);
-                if (empty || value == null) { setText(null); setStyle(""); return; }
+                if (empty || value == null) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
                 setText(value);
+                // Utilisation des couleurs du thème
                 switch (value) {
-                    case "URGENT" -> setStyle("-fx-background-color:#e74c3c;-fx-text-fill:white;");
-                    case "HIGH" -> setStyle("-fx-background-color:#e67e22;-fx-text-fill:white;");
-                    case "MEDIUM" -> setStyle("-fx-background-color:#f39c12;-fx-text-fill:white;");
-                    case "LOW" -> setStyle("-fx-background-color:#95a5a6;-fx-text-fill:white;");
+                    case "URGENT" -> setStyle("-fx-background-color: #EF4444; -fx-text-fill: white; -fx-alignment: CENTER;");
+                    case "HIGH" -> setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-alignment: CENTER;");
+                    case "MEDIUM" -> setStyle("-fx-background-color: #8B5CF6; -fx-text-fill: white; -fx-alignment: CENTER;");
+                    case "LOW" -> setStyle("-fx-background-color: #64748B; -fx-text-fill: white; -fx-alignment: CENTER;");
                 }
             }
         });
 
-        // Styles status
+        // Styles status avec classes CSS du thème
         statusColumn.setCellFactory(col -> new TableCell<Task, String>() {
             @Override
             protected void updateItem(String value, boolean empty) {
                 super.updateItem(value, empty);
-                if (empty || value == null) { setText(null); setStyle(""); return; }
+                if (empty || value == null) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
                 setText(value);
                 switch (value) {
-                    case "TODO" -> setStyle("-fx-background-color:#3498db;-fx-text-fill:white;");
-                    case "IN_PROGRESS" -> setStyle("-fx-background-color:#f39c12;-fx-text-fill:white;");
-                    case "COMPLETED" -> setStyle("-fx-background-color:#2ecc71;-fx-text-fill:white;");
-                    case "CANCELLED" -> setStyle("-fx-background-color:#95a5a6;-fx-text-fill:white;");
+                    case "TODO" -> setStyle("-fx-background-color: #6366F1; -fx-text-fill: white; -fx-alignment: CENTER;");
+                    case "IN_PROGRESS" -> setStyle("-fx-background-color: #F59E0B; -fx-text-fill: white; -fx-alignment: CENTER;");
+                    case "COMPLETED" -> setStyle("-fx-background-color: #10B981; -fx-text-fill: white; -fx-alignment: CENTER;");
+                    case "CANCELLED" -> setStyle("-fx-background-color: #64748B; -fx-text-fill: white; -fx-alignment: CENTER;");
                 }
             }
         });
 
-        // Actions buttons
+        // Actions buttons avec style du thème
         actionsColumn.setCellFactory(col -> new TableCell<Task, Void>() {
-            private final Button editBtn = new Button("Modifier");
-            private final Button deleteBtn = new Button("Supprimer");
+            private final Button editBtn = new Button("✏️ Modifier");
+            private final Button deleteBtn = new Button("🗑️ Supprimer");
             {
-                editBtn.setStyle("-fx-background-color:#3498db;-fx-text-fill:white;");
-                deleteBtn.setStyle("-fx-background-color:#e74c3c;-fx-text-fill:white;");
+                // Appliquer les classes CSS du thème
+                editBtn.getStyleClass().addAll("button");
+                deleteBtn.getStyleClass().addAll("button", "danger");
 
                 editBtn.setOnAction(e -> editTask(getTableView().getItems().get(getIndex())));
                 deleteBtn.setOnAction(e -> deleteTask(getTableView().getItems().get(getIndex())));
@@ -131,7 +140,13 @@ public class TaskManagementController {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : new HBox(5, editBtn, deleteBtn));
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox box = new HBox(8, editBtn, deleteBtn);
+                    box.setAlignment(javafx.geometry.Pos.CENTER);
+                    setGraphic(box);
+                }
             }
         });
     }
@@ -167,11 +182,17 @@ public class TaskManagementController {
         dialog.initOwner(welcomeLabel.getScene().getWindow());
         dialog.initModality(Modality.WINDOW_MODAL);
 
+        // Appliquer le style du thème à la dialog
+        dialog.getDialogPane().getStyleClass().add("dialog-pane");
+
         ButtonType createBtnType = new ButtonType("Créer", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(createBtnType, ButtonType.CANCEL);
 
         TextField titleField = new TextField();
+        titleField.setPromptText("Titre de la tâche");
         TextArea descArea = new TextArea();
+        descArea.setPromptText("Description détaillée");
+        descArea.setPrefRowCount(4);
         ComboBox<String> projectCombo = new ComboBox<>();
         ComboBox<String> userCombo = new ComboBox<>();
         ComboBox<String> priorityCombo = new ComboBox<>();
@@ -187,19 +208,26 @@ public class TaskManagementController {
         priorityCombo.setValue("MEDIUM");
 
         GridPane grid = new GridPane();
-        grid.setHgap(10); grid.setVgap(10);
+        grid.setHgap(10);
+        grid.setVgap(15);
         grid.addRow(0, new Label("Titre :"), titleField);
         grid.addRow(1, new Label("Description :"), descArea);
         grid.addRow(2, new Label("Projet :"), projectCombo);
         grid.addRow(3, new Label("Assigné à :"), userCombo);
         grid.addRow(4, new Label("Priorité :"), priorityCombo);
         grid.addRow(5, new Label("Date limite :"), dueDatePicker);
+
+        // Appliquer les styles aux labels
+        grid.getChildren().stream()
+                .filter(node -> node instanceof Label)
+                .forEach(label -> ((Label) label).getStyleClass().add("form-label"));
+
         dialog.getDialogPane().setContent(grid);
 
         Button createButton = (Button) dialog.getDialogPane().lookupButton(createBtnType);
         createButton.addEventFilter(ActionEvent.ACTION, e -> {
             if (titleField.getText().isBlank() || projectCombo.getValue() == null) {
-                showError("Champs obligatoires manquants");
+                showError("Titre et projet sont obligatoires !");
                 e.consume();
                 return;
             }
@@ -225,9 +253,9 @@ public class TaskManagementController {
             if (taskDAO.create(task)) {
                 dialog.close();
                 loadTasks();
-                showSuccess("Tâche créée avec succès");
+                showSuccess("✓ Tâche créée avec succès !");
             } else {
-                showError("Erreur lors de la création");
+                showError("✗ Erreur lors de la création");
                 e.consume();
             }
         });
@@ -235,19 +263,25 @@ public class TaskManagementController {
         dialog.showAndWait();
     }
 
-    private void editTask(Task task) { showInfo("Info", "Fonction en cours de dev"); }
+    private void editTask(Task task) {
+        showInfo("Information", "Fonction d'édition en cours de développement");
+    }
 
     private void deleteTask(Task task) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Supprimer « " + task.getTitle() + " » ?",
+                "Êtes-vous sûr de vouloir supprimer la tâche « " + task.getTitle() + " » ?",
                 ButtonType.OK, ButtonType.CANCEL);
+        alert.setTitle("Confirmation de suppression");
+        alert.setHeaderText(null);
         alert.initOwner(welcomeLabel.getScene().getWindow());
+        alert.getDialogPane().getStyleClass().add("dialog-pane");
+
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             if (taskDAO.delete(task.getId())) {
                 loadTasks();
-                showSuccess("Tâche supprimée");
+                showSuccess("✓ Tâche supprimée avec succès");
             } else {
-                showError("Erreur suppression");
+                showError("✗ Erreur lors de la suppression");
             }
         }
     }
@@ -259,22 +293,31 @@ public class TaskManagementController {
                 "Dashboard");
     }
 
-    // 🌟 Messages temporaires
-    private void showFeedback(String msg, String color) {
+    // Messages temporaires avec style du thème
+    private void showFeedback(String msg, String styleClass) {
         feedbackLabel.setText(msg);
-        feedbackLabel.setStyle("-fx-text-fill:" + color + "; -fx-font-weight:bold;");
+        feedbackLabel.getStyleClass().clear();
+        feedbackLabel.getStyleClass().add(styleClass);
         feedbackLabel.setVisible(true);
-        PauseTransition pt = new PauseTransition(Duration.seconds(2.5));
+        PauseTransition pt = new PauseTransition(Duration.seconds(3));
         pt.setOnFinished(e -> feedbackLabel.setVisible(false));
         pt.play();
     }
 
-    private void showSuccess(String msg) { showFeedback(msg, "green"); }
-    private void showError(String msg) { showFeedback(msg, "red"); }
+    private void showSuccess(String msg) {
+        showFeedback(msg, "success-message");
+        feedbackLabel.setStyle("-fx-text-fill: #10B981; -fx-font-weight: bold; -fx-font-size: 14px;");
+    }
+
+    private void showError(String msg) {
+        showFeedback(msg, "error-message");
+    }
 
     private void showInfo(String title, String msg) {
         Alert a = new Alert(Alert.AlertType.INFORMATION, msg);
         a.setTitle(title);
+        a.setHeaderText(null);
+        a.getDialogPane().getStyleClass().add("dialog-pane");
         a.showAndWait();
     }
 }

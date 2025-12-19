@@ -6,54 +6,59 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.taskmaster.controllers.UserProjectsController"
-            prefWidth="1200" prefHeight="700">
+            prefWidth="1200" prefHeight="700"
+            styleClass="root">
 
     <!-- MENU LATERAL GAUCHE -->
     <left>
-        <VBox spacing="0" style="-fx-background-color: #16a085;" prefWidth="250">
+        <VBox spacing="0" styleClass="sidebar" prefWidth="250">
             <padding>
                 <Insets top="20" right="0" bottom="20" left="0"/>
             </padding>
 
             <!-- En-tête -->
-            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
-                <Label text="TASKMASTER" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
-                <Label text="Utilisateur" style="-fx-text-fill: #ecf0f1; -fx-font-size: 14px;"/>
+            <VBox alignment="CENTER" spacing="10">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <Label text="TASKMASTER" styleClass="title"/>
+                <Label text="Utilisateur" styleClass="subtitle"/>
             </VBox>
 
-            <Separator style="-fx-background-color: #1abc9c;"/>
+            <Separator/>
 
             <!-- Boutons de navigation -->
-            <VBox spacing="5" style="-fx-padding: 10;">
+            <VBox spacing="5">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
                 <Button text="📁 Mes Projets"
-                        maxWidth="Infinity" style="-fx-background-color: #1abc9c; -fx-text-fill: white;
-                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                        maxWidth="Infinity" styleClass="nav-button, nav-button-active"/>
 
                 <Button text="◀ Retour au Dashboard" onAction="#goBack"
-                        maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white;
-                        -fx-alignment: CENTER_LEFT; -fx-padding: 15; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                        maxWidth="Infinity" styleClass="nav-button"/>
             </VBox>
         </VBox>
     </left>
 
     <!-- CONTENU CENTRAL -->
     <center>
-        <VBox spacing="20" style="-fx-background-color: #ecf0f1;">
+        <VBox spacing="20" styleClass="content-area">
             <padding>
                 <Insets top="30" right="30" bottom="30" left="30"/>
             </padding>
 
             <!-- En-tête -->
             <HBox spacing="20" alignment="CENTER_LEFT">
-                <Label fx:id="welcomeLabel" text="Mes Projets" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+                <Label fx:id="welcomeLabel" text="Mes Projets" styleClass="page-title"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="🔄 Actualiser" onAction="#refreshProjects"
-                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 20; -fx-cursor: hand;"/>
+                        styleClass="button"/>
             </HBox>
 
             <!-- Tableau des projets -->
             <VBox spacing="10" VBox.vgrow="ALWAYS">
-                <Label text="Projets auxquels je participe" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Projets auxquels je participe" styleClass="section-title"/>
 
                 <TableView fx:id="projectsTable" prefHeight="300">
                     <columns>
@@ -64,6 +69,10 @@
                         <TableColumn fx:id="endDateColumn" text="Fin" prefWidth="100"/>
                         <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
                     </columns>
+                    <!-- ⭐ CORRECTION ⭐ -->
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
                 </TableView>
             </VBox>
 
@@ -72,7 +81,7 @@
             <!-- Tâches du projet sélectionné -->
             <VBox spacing="10" VBox.vgrow="ALWAYS">
                 <Label fx:id="selectedProjectLabel" text="Sélectionnez un projet pour voir vos tâches"
-                       style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                       styleClass="section-title"/>
 
                 <TableView fx:id="tasksTable" prefHeight="250">
                     <columns>
@@ -81,6 +90,10 @@
                         <TableColumn fx:id="taskStatusColumn" text="Statut" prefWidth="120"/>
                         <TableColumn fx:id="taskDueDateColumn" text="Date limite" prefWidth="120"/>
                     </columns>
+                    <!-- ⭐ CORRECTION ⭐ -->
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
                 </TableView>
             </VBox>
         </VBox>
